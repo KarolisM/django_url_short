@@ -7,6 +7,6 @@ class LinkDestinationAdmin(admin.ModelAdmin):
     empty_value_display = '-empty-'
     list_filter = ('user', 'created_on')
     list_display = ('__str__', 'user', 'created_on', 'expires_on', 'expired', 'link', 'destination', 'clicks')
-    search_fields = ('user', 'link', 'destination' )
+    search_fields = ('user__username', 'link', 'destination')
 
 admin.site.register(LinkDestination, LinkDestinationAdmin)
