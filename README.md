@@ -1,5 +1,7 @@
 # django_url_short and demo
 
+[![Build Status](https://travis-ci.org/KarolisM/django_url_short.svg?branch=master)](https://travis-ci.org/KarolisM/django_url_short)
+
 This simple project enables user to create short urls on [Django](https://github.com/django/django) framework.  
 Short URLs are created and saved to the database via API.
 
@@ -38,14 +40,18 @@ Short URLs are created and saved to the database via API.
 
 1. To create new short link a POST request is send to the url linked to `CreateLink` class.
 
-    ```json
+    ```groovy
     {'link': <url>}
     ```
 
 1. Server will respond with the created short link.
 
-    ```json
-    {'link': <short_url>, 'destination': <original_url>, 'expires': <date_time>}
+    ```groovy
+    {
+        'link': <short_url>,
+        'destination': <original_url>,
+        'expires': <date_time>
+    }
     ```
 
 1. If all alright server will respond with `status_code=200`. Otherwise:
