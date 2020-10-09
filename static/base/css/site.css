@@ -1,0 +1,61 @@
+/* run_snakemake_api */
+
+html {
+    height: 100%;
+}
+
+body {
+    color: #444;
+    background-color: rgb(255, 255, 255);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    line-height: 1.428571429;
+    margin-top: 25%;
+    height: 90%;
+}
+
+tfoot input {
+    width: 100%;
+    padding: 3px;
+    box-sizing: border-box;
+}
+
+.page-container {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+}
+
+.content-wrap {
+    flex-grow: 1;
+    margin-left: 1%;
+    margin-right: 1%;
+    margin-bottom: 1%
+}
+
+.footer {
+    flex-grow: 0;
+    text-align: center;
+}
+
+.disabledbutton {
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+.running-task-toast {
+    min-height: 200px;
+}
+
+.btn-block {
+    border-radius: 0;
+    margin: auto;
+}
+
+.navbar-brand {
+    background-image: url(../images/favicon-32x32.png);
+    background-repeat: no-repeat;
+    height: 32px;
+    width: 32px;
+    margin-left: 2px;
+}

@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"></script>
+    <link href="{% static 'css/site.css' %}" rel="stylesheet"> 
+    {% block javascript_head %} 
+    {% endblock %} 
+    {% block title %}
+    <title>Home</title>
+    {% endblock %}
+</head>
+
+<body>
+    <div class="page-container">
+        <nav class="navbar bg-light fixed-top navbar-expand-lg">
+            <a class="navbar-brand" title="Home" href="{% url 'home' %}"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarcollapse" aria-controls="navbarcollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarcollapse">
+                <ul class="nav navbar-nav ml-auto">
+                {% if request.user.is_superuser %}
+                    <li class="nav-item active">
+                        {% csrf_token %}
+                        <a href="/admin/">
+                            <button class="btn my-2 my-sm-0 btn-outline-danger mr-1">Admin</button>
+                        </a>
+                    </li>
+                {% endif %}
+                {% if user.is_authenticated %}
+                    <li class="nav-item active">
+                        <a href="/logout/">
+                            <button class="btn my-2 my-sm-0 btn-outline-success mr-1">Logout</button>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item active">
+                        <a href="/login/">
+                            <button class="btn my-2 my-sm-0 btn-outline-success mr-1">Login</button>
+                        </a>
+                    </li>
+                {% endif %}
+                </ul>
+            </div>
+        </nav>
+        
+        {% block content %}
+        {% if user.is_authenticated %}
+        <div class="body-content content-wrap">
+            <div class="container">
+                <div class="form-group">
+                    <label for="link"></label>
+                    {% csrf_token %}
+                    <input type="text" class="form-control form-control-lg" id="link" placeholder="Shorten your link" required="required">
+                </div>
+                <button id="shorten-btn" class="btn btn-primary btn-lg btn-block">
+                    Shorten
+                </button>
+            </div>
+            <div style="position: relative;">
+                <div class="d-flex justify-content-center align-items-center" style="min-height: 400px; min-width: 400px;">
+                    <div id="toast" class="toast ml-2 mr-2 mt-2 mb-2" data-autohide="false" role="alert">
+                        <div class="toast-header container-fluid">
+                            <img src="{% static 'images/favicon-32x32.png' %}" class="rounded mr-2" alt="...">
+                            <strong id="toast-strong" class="mr-auto">Link created successfully</strong>
+                            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="toast-body container-fluid">
+                            <div id="toast-msg-body"></div>
+                            <button class="btn btn-clip btn-success btn-lg btn-block mt-2" data-clipboard-target="#short-link">
+                                <img src="" alt="Copy to clipboard">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endblock %}
+        <footer>
+            <div class="footer">
+            </div>
+        </footer>
+    </div>
+</body>
+<script type="text/javascript" src="{% static 'js/create_link.js'%}"></script>
+<script type="text/javascript">
+    var api_create_link =  "{% url 'django_url_short:api_create_link' %}"
+    var csrf = $("input[name='csrfmiddlewaretoken']")[0].value
+    $(document).ready(function() {
+        new ClipboardJS('.btn-clip');
+        $("#shorten-btn").click(function(e){
+            var link = $('#link').val()
+            if (!(link == "")) {
+                create_link(api_create_link, link)
+            }
+        })
+    })
+</script>
+</html>

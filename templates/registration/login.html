@@ -1,0 +1,35 @@
+{% extends 'home/home.html' %}
+{% load static %}
+{% block molbiotools_style %}
+<link href="{% static 'css/registration.css' %}" rel="stylesheet">
+{% endblock %}
+{% block title %}
+<title>Login</title>
+{% endblock %}
+{% block content %}
+<div class="container body-content">
+  <div class="login-form">
+    <form method="post" class="form-horizontal">
+      {% csrf_token %}
+      <h2 class="text-center">Log in</h2>
+        {% if form.non_field_errors %}
+        <div class="form-group alert alert-danger">
+            {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <div class="form-group">
+          <input type="text" name="username" class="form-control" required="required" id="id_username"
+          placeholder="Username: [name.surname]@thermofisher.com"
+          >
+        </div>
+        <div class="form-group">
+            <input type="password" name="password" class="form-control" placeholder="Password" required="required" id="id_password">
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-block">Log in</button>
+        </div>
+  </div>
+</div>
+{% endblock %}
