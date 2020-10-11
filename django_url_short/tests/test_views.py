@@ -63,9 +63,24 @@ class CreateLinkTests(TestCaseSet):
         self.assertIsInstance(q.link, str)
         self.assertEquals(q.destination, 'blahh2')
         qs.add(q.link)
-        for i in range(1000):
+        for _ in range(1000):
             qs.add(create_link_view.get_queryset('blahh2').link)
         self.assertEquals(len(qs), 1001)
+
+        q = create_link_view.get_queryset('blahh4', get_link=create_link_view.get_link1)
+        self.assertTrue(len(q.link) == LINK_LENGTH)
+        self.assertIsInstance(q.link, str)
+        self.assertEquals(q.destination, 'blahh4')
+
+        q = create_link_view.get_queryset('blahh5', get_link=create_link_view.get_link2)
+        self.assertTrue(len(q.link) == LINK_LENGTH)
+        self.assertIsInstance(q.link, str)
+        self.assertEquals(q.destination, 'blahh5')
+        
+        q = create_link_view.get_queryset('blahh6', get_link=create_link_view.get_link3)
+        self.assertTrue(len(q.link) == LINK_LENGTH)
+        self.assertIsInstance(q.link, str)
+        self.assertEquals(q.destination, 'blahh6')
 
     def test_response_200(self):
         response = self.client.post(reverse('django_url_short:api_create_link'), {'link': 'blahh'})

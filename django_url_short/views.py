@@ -9,10 +9,12 @@ from django.http import Http404
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.contrib.sites.shortcuts import get_current_site
+from django_url_short.settings import SITE_URL, LINK_LENGTH
 import random
 import string
-
-from django_url_short.settings import SITE_URL, LINK_LENGTH
+import secrets
+import base64
+import os
 
 
 def link_redirect(request):
@@ -67,33 +69,24 @@ class CreateLink(View):
         except CreateLinkError as error:
             return CreateLinkResponse(error.data, status=error.status_code)
 
-    def get_queryset(self, destination):
-        query = None
-        ct = 0
-        while True:
-            try:
-                query = self.create_model(link=self.get_link(), destination=destination)
-                break
-            except IntegrityError:
-                pass
-            except:
-                raise CreateLinkError(
-                    status=HttpStatus.HTTP_500_INTERNAL_SERVER_ERROR,
-                    msg='Failed to create a link.',
-                    destination=str(destination)
-                )
-            ct += 1 
-            if ct > 10:
-                raise CreateLinkError(
-                    status=HttpStatus.HTTP_500_INTERNAL_SERVER_ERROR,
-                    msg='Failed to create a link. Please try again later.',
-                    destination=str(destination)
-                )
+    def get_queryset(self, destination, get_link=None):
+        if get_link:
+            link = get_link()
+        else:
+            link = self.get_link3()
+        if self.model.objects.filter(link=link).exists():
+            return self.get_queryset(destination)
+        
+        return self.create_model(link=link, destination=destination)
 
-        return query
-
-    def get_link(self):
+    def get_link1(self):
         return ''.join((random.choice(self.letters_and_digits) for i in range(LINK_LENGTH)))
+    
+    def get_link2(self):
+        return secrets.token_urlsafe(LINK_LENGTH)[0:LINK_LENGTH]
+
+    def get_link3(self):
+        return base64.urlsafe_b64encode(os.urandom(LINK_LENGTH)).strip(b'=').decode('ascii')[0:LINK_LENGTH]
 
     def _post(self, request, *args, **kwargs):
 
